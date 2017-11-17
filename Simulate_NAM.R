@@ -38,13 +38,6 @@ for(marker in 1:nM){
 }
 Image(marker_genotypes[,-c(1:2)])
 
-# parent_genotypes = matrix(sample(c(0,1),nPop*nSNP,replace=T),nc=nPop)
-# marker_genotypes = data.frame(Pop = factor(rep(1:nPop,each = nLines)),M1 = sample(c(0,1),n,replace=T))
-# marker_genotypes$M2 = marker_genotypes$M1
-# recombinations = sample(1:n,r*n)
-# marker_genotypes$M2[recombinations] = (marker_genotypes$M2[recombinations] + 1) %% 2
-#
-# marker_genotypes = marker_genotypes[order(marker_genotypes$Pop,marker_genotypes$M1,marker_genotypes$M2),]
 
 imputed_genotypes = matrix(0,nSNP*nM,n)
 imputed_pops = array(0,dim=c(nSNP*nM,n,nPop))
@@ -97,13 +90,14 @@ data$y = data$base + data$effect
 library(lmerTest)
 res1=sapply(1:nrow(imputed_genotypes),function(i) {
   data$SNP = imputed_genotypes[i,]
-  # lm1 = lmer(y~SNP+(1|Pop),data)
+  # lm1 = lmer(y~SNP+(1|Pop),data)  # gives same answer as lm.
   lm1 = lm(y~Pop+SNP,data)
   anova(lm1)$P[2]
 })
 # plot(sort(-log10(res1)))
 # plot(-log10(res1));abline(v=causal)
 
+# analyze as meta analysis across populations. Almost same as using lm.
 # library(meta)
 # res2 = sapply(1:nrow(imputed_genotypes),function(i) {
 #   data$SNP = imputed_genotypes[i,]
@@ -133,6 +127,6 @@ plot(-log10(res1));abline(v=causal,col=2);abline(v=seq(0,nM)*nSNP)
 # plot(-log10(res2));abline(v=causal,col=2);abline(v=seq(0,nM)*nSNP)
 plot(-log10(res3));abline(v=causal,col=2);abline(v=seq(0,nM)*nSNP)
 
-# plot(-log10(res1),abs(seq(1,nM*nSNP)-causal))
+plot(-log10(res1),abs(seq(1,nM*nSNP)-causal))
 d = data.frame(y = -log10(res1),dist = abs(seq(1,nM*nSNP)-causal))[-causal,]
 ggplot(d,aes(x=y,y=dist)) + geom_point() + geom_smooth()
