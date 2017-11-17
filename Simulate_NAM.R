@@ -1,4 +1,4 @@
-# simulate a locus bounded by two typed markers
+# simulate a locus bounded by two typed markers (expanded to several consecutive loci)
 # With a known percent recombination between markers
 # simulate random SNPs across locus in parents that can be imputed in lines
 # simulate a single causal locus (with potentially multiple alleles across founders) in locus
@@ -6,9 +6,9 @@
 nPop = 7
 nLines = 100
 r = 0.1  # percent recombination between markers
-nM = 10
-nSNP = 100
-allele_freq = .2
+nM = 10 # this many regions bounded by typed markers
+nSNP = 100 # per region
+allele_freq = .2 # Average frequency in founders at all SNPs
 
 # parent_genotypes = t(sapply(1:2^nPop,function(x) as.integer(intToBits(x)))[1:nPop,])
 # topi = diff(cumsum(c(2^(0:7))))-1
